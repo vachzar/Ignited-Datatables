@@ -295,7 +295,7 @@
       if($sSearch != '')
         for($i = 0; $i < count($mColArray); $i++)
           if($this->ci->input->post('bSearchable_' . $i) == 'true' && in_array($mColArray[$i], $columns))
-            $sWhere .= $this->select[$mColArray[$i]] . " LIKE '%" . $sSearch . "%' OR ";
+            $sWhere .= $this->select[$mColArray[$i]] . " LIKE %" . $sSearch . "% OR ";
 
       $sWhere = substr_replace($sWhere, '', -3);
 
