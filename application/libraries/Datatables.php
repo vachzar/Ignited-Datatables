@@ -12,6 +12,7 @@
   * @author     Vincent Bambico <metal.conspiracy@gmail.com>
   *             Yusuf Ozdemir <yusuf@ozdemir.be>
   * @link       http://codeigniter.com/forums/viewthread/160896/
+  * @modifiedby vachzar <vachzar.com>
   */
   class Datatables
   {
@@ -287,7 +288,7 @@
         $mColArray = $this->columns;
 
       $sWhere = '';
-      $sSearch = $this->ci->db->escape($this->ci->input->post('sSearch'));
+      $sSearch = $this->ci->db->escape('%'.$this->ci->input->post('sSearch').'%');
 
       $mColArray = array_values(array_diff($mColArray, $this->unset_columns));
       $columns = array_values(array_diff($this->columns, $this->unset_columns));
@@ -295,7 +296,7 @@
       if($sSearch != '')
         for($i = 0; $i < count($mColArray); $i++)
           if($this->ci->input->post('bSearchable_' . $i) == 'true' && in_array($mColArray[$i], $columns))
-            $sWhere .= $this->select[$mColArray[$i]] . " LIKE %" . $sSearch . "% OR ";
+            $sWhere .= $this->select[$mColArray[$i]] . " LIKE " . $sSearch . " OR ";
 
       $sWhere = substr_replace($sWhere, '', -3);
 
@@ -399,8 +400,17 @@
 
       foreach($this->where as $val)
         $this->ci->db->where($val[0], $val[1], $val[2]);
+       /**
+       * added by vachzar add group_by function
+       */ 
+      if($this->group_by != null)
+        $this->ci->db->group_by($this->group_by);
 
-      return $this->ci->db->count_all_results($this->table);
+      /** return $this->ci->db->count_all_results($this->table); 
+       * deprecated!!! if you use this, you won't get good result with group_by function
+       */
+      $q = $this->ci->db->get($this->table);
+      return $q->num_rows();
     }
 
     /**
