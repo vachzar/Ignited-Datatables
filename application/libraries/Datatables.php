@@ -287,8 +287,8 @@
       else
         $mColArray = $this->columns;
 
-      $sWhere = '';
-      $sSearch = $this->ci->db->escape('%'.$this->ci->input->post('sSearch').'%');
+           $sWhere = '';
+      $sSearch = $this->ci->db->escape_like_str($this->ci->input->post('sSearch'));
 
       $mColArray = array_values(array_diff($mColArray, $this->unset_columns));
       $columns = array_values(array_diff($this->columns, $this->unset_columns));
@@ -296,7 +296,7 @@
       if($sSearch != '')
         for($i = 0; $i < count($mColArray); $i++)
           if($this->ci->input->post('bSearchable_' . $i) == 'true' && in_array($mColArray[$i], $columns))
-            $sWhere .= $this->select[$mColArray[$i]] . " LIKE " . $sSearch . " OR ";
+            $sWhere .= $this->select[$mColArray[$i]] . " LIKE '%" . $sSearch . "%' OR ";
 
       $sWhere = substr_replace($sWhere, '', -3);
 
